@@ -53,3 +53,7 @@ Check out a few resources that may come in handy when working with NestJS:
 - To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
 - Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
 - Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
+
+Conventional commits guideline
+
+- Please follow the commit conventions as much as possible. [Guideline](https://www.conventionalcommits.org/en/v1.0.0-beta.2/)
