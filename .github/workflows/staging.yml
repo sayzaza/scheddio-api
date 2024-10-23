@@ -1,0 +1,17 @@
+name: Scheddio-API Staging
+
+on:
+  push:
+    branches: [staging]
+
+jobs:
+  bulid:
+    runs-on: ubuntu-latest
+    steps:
+      - name: run deploy script
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          password: ${{ secrets.STAGING_PASSWORD }}
+          script: /root/redeploy.sh
