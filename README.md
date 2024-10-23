@@ -44,6 +44,20 @@ $ mau deploy
 
 With Mau, we can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
+### Database migration guideline
+
+To generate a new migration based on the code change
+```bash
+$ npm run migration:generate --name=your_migration_name_here
+```
+
+To run remaining migrations
+
+```bash
+$ npm run build
+$ npm run migration:run
+```
+
 ## Resources
 
 Check out a few resources that may come in handy when working with NestJS:
