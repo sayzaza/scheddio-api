@@ -13,7 +13,7 @@ const config = {
   database: process.env.DATABASE_NAME,
   entities: ["dist/modules/**/*.entity{.ts,.js}"],
   migrations: ["dist/migrations/*{.ts,.js}"],
-  synchronize: false,
+  synchronize: true,
   logging: false,
 };
 
