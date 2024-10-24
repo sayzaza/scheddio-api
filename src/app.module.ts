@@ -20,6 +20,6 @@ import { AppService } from './app.service';
     AuthModule,
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService, AuthService],
+  providers: [AppService],
 })
 export class AppModule {}
