@@ -21,7 +21,7 @@ export class CustomerUser {
   @Column({ name: 'USER_LAST_NAME', type: 'text', nullable: true })
   lastName: string;
 
-  @Column({ name: 'USER_EMAIL', type: 'text', nullable: false })
+  @Column({ name: 'USER_EMAIL', type: 'text', nullable: true })
   email: string;
 
   @Column({ name: 'USER_PHONE', type: 'text', nullable: true })
@@ -40,10 +40,10 @@ export class CustomerUser {
   @Column({ name: 'TOP_CLIENT', type: 'bool', default: false })
   topClient: boolean;
 
-  @CreateDateColumn({ name: 'CLIENT_CREATED_DATE', type: 'timestamptz' })
+  @CreateDateColumn({ name: 'CLIENT_CREATED_DATE', type: 'timestamptz', nullable: true })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'LAST_TRANSACTION_DATE', type: 'timestamptz' })
+  @UpdateDateColumn({ name: 'LAST_TRANSACTION_DATE', type: 'timestamptz', nullable: true })
   lastTransaction: Date;
 
   @Column({ name: 'INSTAGRAM_USER', type: 'text', nullable: true })
@@ -61,7 +61,7 @@ export class CustomerUser {
   @Column({ name: 'USER_MOOD', type: 'text', nullable: true })
   mood: string;
 
-  @Column({ name: 'IS_LOYAL1', type: 'bool', default: false })
+  @Column({ name: 'IS_LOYAL', type: 'bool', default: false })
   isLoyal: boolean;
 
   @Column({ name: 'PROFILE_PICTURE_LINK', type: 'text', nullable: true })
@@ -74,7 +74,7 @@ export class CustomerUser {
   })
   serviceProviderInstructions: string;
 
-  @Column({ name: 'CUSTOMER_REF_ID', type: 'int8', nullable: true })
+  @Column({ name: 'CUSTOMER_REF_ID', type: 'int8', nullable: false })
   customerRefId: number;
 
   @BeforeInsert()
