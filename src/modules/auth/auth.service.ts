@@ -6,21 +6,23 @@ import { compare } from 'bcrypt';
 
 import { SignInSuccessDto } from './dto/sign-in-success.dto';
 import { User } from './entities/user.entity';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
+    private userService: UsersService,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     ) {}
 
   async signIn(email: string, password: string): Promise<SignInSuccessDto> {
-    const user = await this.findOneByEmail(email);
+    const user = await this.userService.findOneByEmail(email);
     if (!user) {
       throw new UnauthorizedException();
     }
-    const isMatched = await compare(password, user.encryptedPassword);
+    const isMatched = await compare(password, user.password);
     if (!isMatched) {
       throw new UnauthorizedException();
     }
@@ -32,5 +34,9 @@ export class AuthService {
 
   findOneByEmail(email: string): Promise<User> {
     return this.usersRepository.findOne({ where: { email } });
+  }
+
+  findOne(id: string): Promise<User> {
+    return this.usersRepository.findOne({where: { id }});
   }
 }

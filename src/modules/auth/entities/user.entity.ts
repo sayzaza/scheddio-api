@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserDto } from '../dto/user.dto';
 
 @Entity({ name: 'users', schema: 'auth' })
 export class User {
@@ -113,4 +114,42 @@ export class User {
 
   @Column({ type: 'boolean', name: 'is_anonymous', default: false })
   isAnonymous: boolean;
+
+  toDto(): UserDto {
+    return {
+      id: this.id,
+      instanceId: this.instanceId,
+      aud: this.aud,
+      role: this.role,
+      email: this.email,
+      emailConfirmedAt: this.emailConfirmedAt,
+      invitedAt: this.invitedAt,
+      confirmationSentAt: this.confirmationSentAt,
+      recoveryToken: this.recoveryToken,
+      recoverySentAt: this.recoverySentAt,
+      emailChangeTokenNew: this.emailChangeTokenNew,
+      emailChange: this.emailChange,
+      emailChangeSentAt: this.emailChangeSentAt,
+      lastSignInAt: this.lastSignInAt,
+      rawAppMetaData: this.rawAppMetaData,
+      rawUserMetaData: this.rawUserMetaData,
+      isSuperAdmin: this.isSuperAdmin,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      phone: this.phone,
+      phoneConfirmedAt: this.phoneConfirmedAt,
+      phoneChange: this.phoneChange,
+      phoneChangeToken: this.phoneChangeToken,
+      phoneChangeSentAt: this.phoneChangeSentAt,
+      confirmedAt: this.confirmedAt,
+      emailChangeTokenCurrent: this.emailChangeTokenCurrent,
+      emailChangeConfirmStatus: this.emailChangeConfirmStatus,
+      bannedUntil: this.bannedUntil,
+      reauthenticationToken: this.reauthenticationToken,
+      reauthenticationSentAt: this.reauthenticationSentAt,
+      isSsoUser: this.isSsoUser,
+      deletedAt: this.deletedAt,
+      isAnonymous: this.isAnonymous,
+    };
+  }
 }

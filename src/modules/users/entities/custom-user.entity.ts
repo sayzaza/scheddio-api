@@ -7,7 +7,8 @@ import {
   UpdateDateColumn,
   Generated,
 } from 'typeorm';
-import { UserDto } from '../dto/user.dto';
+import { CustomerUserDto } from '../dto/customer-user.dto';
+import { hash } from 'bcrypt';
 
 // TODO: dunno the exact usage of this schema, let's say it's just a draft schema for now
 @Entity({ name: 'users_table', schema: 'public' })
@@ -64,6 +65,9 @@ export class CustomerUser {
   @Column({ name: 'IS_LOYAL', type: 'bool', default: false })
   isLoyal: boolean;
 
+  @Column({ name: 'encrypted_password', default: '' })
+  password: string;
+
   @Column({ name: 'PROFILE_PICTURE_LINK', type: 'text', nullable: true })
   profilePictureLink: string;
 
@@ -79,11 +83,13 @@ export class CustomerUser {
 
   @BeforeInsert()
   async preProcess() {
-    this.email = this.email.toLowerCase();
+    return hash(this.password, 10).then(
+      (encrypted) => (this.password = encrypted),
+    );
   }
 
   // DTO Conversion
-  toDto(): UserDto {
+  toDto(): CustomerUserDto {
     return {
       email: this.email,
       name: this.name,
@@ -101,5 +107,7 @@ export class CustomerUser {
 
   constructor(email?: string, password?: string) {
     this.email = email?.toLowerCase();
+    this.password = password;
+    this.customerRefId = 0;
   }
 }

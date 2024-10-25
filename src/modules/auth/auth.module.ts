@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JWT_SECRET } from '../../shared/constants';
 import { User } from './entities/user.entity';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { User } from './entities/user.entity';
         expiresIn: '1d', // TODO: should be reconsidered later on
       }
     }),
+    UsersModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],

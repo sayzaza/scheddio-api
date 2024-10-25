@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
-import * as expressBasicAuth from 'express-basic-auth';
+import expressBasicAuth from 'express-basic-auth';
 import { config as dotenvConfig } from 'dotenv';
 
 import { AppModule } from './app.module';
