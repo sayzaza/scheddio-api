@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Employee } from '../users/entities/employee.entity';
 
 @Entity({ name: 'custom_product_table', schema: 'public' })
 export class CustomProduct {
@@ -8,8 +9,9 @@ export class CustomProduct {
   @Column({ type: 'text', name: 'CUSTOM_PRODUCT_NAME', nullable: false })
   customProductName: string;
 
-  @Column({ type: 'uuid', name: 'CREATED_BY', nullable: false })
-  createdBy: string;
+  @ManyToOne(() => Employee, employee => employee.customProducts)
+  @JoinColumn({ name: 'CREATED_BY', foreignKeyConstraintName: 'public_custom_product_table_CREATED_BY_fkey' })
+  createdBy: Employee;
 
   @Column({ type: 'text', name: 'CUSTOM_PRODUCT_DESCRIPTION', nullable: false })
   customProductDescription: string;
