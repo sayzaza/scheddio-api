@@ -1,18 +1,20 @@
+import { hash } from 'bcrypt';
+
 import {
   BeforeInsert,
   Column,
-  Entity,
-  PrimaryGeneratedColumn,
   CreateDateColumn,
-  UpdateDateColumn,
+  Entity,
   Generated,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { CustomerUserDto } from '../dto/customer-user.dto';
-import { hash } from 'bcrypt';
+import { GroupUserMapping } from './group-user-mapping.entity';
 
-// TODO: dunno the exact usage of this schema, let's say it's just a draft schema for now
 @Entity({ name: 'users_table', schema: 'public' })
-export class CustomerUser {
+export class User {
   @PrimaryGeneratedColumn({ name: 'USER_ID', type: 'int8' })
   id: number;
 
@@ -41,10 +43,18 @@ export class CustomerUser {
   @Column({ name: 'TOP_CLIENT', type: 'bool', default: false })
   topClient: boolean;
 
-  @CreateDateColumn({ name: 'CLIENT_CREATED_DATE', type: 'timestamptz', nullable: true })
+  @CreateDateColumn({
+    name: 'CLIENT_CREATED_DATE',
+    type: 'timestamptz',
+    nullable: true,
+  })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'LAST_TRANSACTION_DATE', type: 'timestamptz', nullable: true })
+  @UpdateDateColumn({
+    name: 'LAST_TRANSACTION_DATE',
+    type: 'timestamptz',
+    nullable: true,
+  })
   lastTransaction: Date;
 
   @Column({ name: 'INSTAGRAM_USER', type: 'text', nullable: true })
@@ -80,6 +90,9 @@ export class CustomerUser {
 
   @Column({ name: 'CUSTOMER_REF_ID', type: 'int8', nullable: false })
   customerRefId: number;
+
+  @OneToMany(() => GroupUserMapping, (entity) => entity.user)
+  groupUserMappings: GroupUserMapping[];
 
   @BeforeInsert()
   async preProcess() {

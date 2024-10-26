@@ -4,20 +4,20 @@ import { Repository } from 'typeorm';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CustomerUser } from './entities/custom-user.entity';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(CustomerUser)
-    private readonly userRepository: Repository<CustomerUser>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
   async create(payload: CreateUserDto) {
     const found = await this.findOneByEmail(payload.email);
     if (found) {
       throw new ForbiddenException('The email is already registered');
     }
-    const user = new CustomerUser(payload.email, payload.password);
+    const user = new User(payload.email, payload.password);
     return this.userRepository.save(user);
   }
 
@@ -25,11 +25,11 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  findOne(id: number): Promise<CustomerUser> {
+  findOne(id: number): Promise<User> {
     return this.userRepository.findOne({ where: { id } });
   }
 
-  findOneByEmail(email: string): Promise<CustomerUser> {
+  findOneByEmail(email: string): Promise<User> {
     return this.userRepository.findOne({ where: { email } });
   }
 

@@ -8,7 +8,7 @@ import {
 import { UserDto } from '../dto/user.dto';
 
 @Entity({ name: 'users', schema: 'auth' })
-export class User {
+export class AuthUser {
   @PrimaryColumn({ type: 'uuid', name: 'id' })
   id: string;
 
