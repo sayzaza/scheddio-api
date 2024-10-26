@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { ClientAction } from '../../entities/client-action.entity';
 
 @Entity({ name: 'EMPLOYEE_TABLE', schema: 'public' })
 export class Employee {
@@ -28,4 +29,7 @@ export class Employee {
 
   @Column({ type: 'bigint', array: true, name: 'ACESS_LEVELS', default: () => "'{}'", nullable: false })
   accessLevels: number[];
+
+  @OneToMany(() => ClientAction, entity => entity.performedBy)
+  clientActions: ClientAction[];
 }

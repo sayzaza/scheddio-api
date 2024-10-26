@@ -1,4 +1,6 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from '../users/entities/user.entity';
+import { Employee } from '../users/entities/employee.entity';
 
 @Entity({ name: 'client_actions_table', schema: 'public' })
 export class ClientAction {
@@ -8,10 +10,12 @@ export class ClientAction {
   @CreateDateColumn({ type: 'timestamptz', name: 'ACTION_DATE', default: () => 'now()', nullable: false })
   actionDate: Date;
 
-  @Column({ type: 'bigint', name: 'CLIENT_ID', nullable: false })
-  clientId: number;
+  @ManyToOne(() => User, user => user.clientActions)
+  @JoinColumn({ name: 'CLIENT_ID', foreignKeyConstraintName: 'client_actions_table_CLIENT_ID_fkey' })
+  client: User;
 
-  @Column({ type: 'uuid', name: 'PERFORMED_BY', nullable: true })
+  @ManyToOne(() => Employee, employee => employee.clientActions)
+  @JoinColumn({ name: 'PERFORMED_BY', foreignKeyConstraintName: 'client_actions_table_PERFORMED_BY_fkey' })
   performedBy: string;
 
   @Column({ type: 'varchar', name: 'ACTION', nullable: true })

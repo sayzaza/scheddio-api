@@ -12,6 +12,7 @@ import {
 } from 'typeorm';
 import { CustomerUserDto } from '../dto/customer-user.dto';
 import { GroupUserMapping } from './group-user-mapping.entity';
+import { ClientAction } from '../../entities/client-action.entity';
 
 @Entity({ name: 'users_table', schema: 'public' })
 export class User {
@@ -93,6 +94,9 @@ export class User {
 
   @OneToMany(() => GroupUserMapping, (entity) => entity.user)
   groupUserMappings: GroupUserMapping[];
+
+  @OneToMany(() => ClientAction, entity => entity.client)
+  clientActions: ClientAction[];
 
   @BeforeInsert()
   async preProcess() {
