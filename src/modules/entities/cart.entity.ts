@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { User } from '../users/entities/user.entity';
 
 @Entity({ name: 'cart_table', schema: 'public' })
 export class Cart {
@@ -14,8 +15,9 @@ export class Cart {
   @Column({ type: 'bigint', name: 'CART_PRODUCT_VARIANT_ID', nullable: true })
   cartProductVariantId: number;
 
-  @Column({ type: 'bigint', name: 'CART_PRODUCT_CLIENT_ID', nullable: true })
-  cartProductClientId: number;
+  @ManyToOne(() => User, (user) => user.carts)
+  @JoinColumn({ name: 'CART_PRODUCT_CLIENT_ID', foreignKeyConstraintName: 'cart_table_CART_PRODUCT_CLIENT_ID_fkey' })
+  cartProductClient: User;
 
   @Column({ type: 'boolean', name: 'TOP_CLIENT', nullable: true })
   topClient: boolean;
