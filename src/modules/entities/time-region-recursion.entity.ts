@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
+import { TimeRegion } from './time-region.entity';
 
 @Entity({ name: 'time_region_recursion_table', schema: 'public' })
 export class TimeRegionRecursion {
@@ -7,4 +8,7 @@ export class TimeRegionRecursion {
 
   @Column({ type: 'text', name: 'RECURSION_NAME', nullable: false })
   recursionName: string;
+
+  @OneToMany(() => TimeRegion, (timeRegion) => timeRegion.recursion)
+  timeRegions: TimeRegion[];
 }

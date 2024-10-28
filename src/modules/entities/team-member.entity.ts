@@ -1,4 +1,9 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
+import { Order } from './order.entity';
+import { OrderItemDeliverable } from './order-item-deliverable.entity';
+import { ProfitRecord } from './profit-record.entity';
+import { TeamMemberPayRate } from './team-member-pay-rate.entity';
+import { TimeRegion } from './time-region.entity';
 
 @Entity({ name: 'team_member_table', schema: 'public' })
 export class TeamMember {
@@ -25,4 +30,19 @@ export class TeamMember {
 
   @Column({ type: 'text', name: 'TEAMMEMBER_HOME_BASE_LOCATION', nullable: true })
   teamMemberHomeBaseLocation: string;
+
+  @OneToMany(() => Order, order => order.teamMember)
+  orders: Order[];
+
+  @OneToMany(() => OrderItemDeliverable, (entity) => entity.orderItem)
+  orderItemDeliverables: OrderItemDeliverable[];
+
+  @OneToMany(() => ProfitRecord, record => record.profitRecordTeamMember)
+  profitRecords: ProfitRecord[];
+
+  @OneToMany(() => TeamMemberPayRate, payRate => payRate.teamMember)
+  payRates: TeamMemberPayRate[];
+
+  @OneToMany(() => TimeRegion, region => region.teamMember)
+  timeRegions: TimeRegion[];
 }

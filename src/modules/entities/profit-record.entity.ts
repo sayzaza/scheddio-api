@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { TeamMember } from './team-member.entity';
 
 @Entity({ name: 'profit_record_table', schema: 'public' })
 export class ProfitRecord {
@@ -50,8 +51,9 @@ export class ProfitRecord {
   @Column({ type: 'double precision', name: 'PROFIT_RECORD_WEEKLY_COST', nullable: true })
   profitRecordWeeklyCost: number;
 
-  @Column({ type: 'bigint', name: 'PROFIT_RECORD_TEAM_MEMBER_ID', nullable: true })
-  profitRecordTeamMemberId: number;
+  @ManyToOne(() => TeamMember, teamMember => teamMember.profitRecords)
+  @JoinColumn({ name: 'PROFIT_RECORD_TEAM_MEMBER_ID', foreignKeyConstraintName: 'profit_record_table_profit_record_team_member_id_fkey' })
+  profitRecordTeamMember: TeamMember;
 
   @Column({ type: 'date', name: 'PROFIT_RECORD_DATE', nullable: false })
   profitRecordDate: string;

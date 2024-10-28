@@ -1,4 +1,6 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Order } from './order.entity';
+import { OrderItemDeliverable } from './order-item-deliverable.entity';
 
 @Entity({ name: 'order_fulfillment_status_table', schema: 'public' })
 export class OrderFulfillmentStatus {
@@ -7,4 +9,10 @@ export class OrderFulfillmentStatus {
 
   @Column({ type: 'text', name: 'STATUS', nullable: false })
   status: string;
+
+  @OneToMany(() => Order, order => order.orderFulfillmentStatus)
+  orders: Order[];
+
+  @OneToMany(() => OrderItemDeliverable, (entity) => entity.orderItem)
+  orderItemDeliverables: OrderItemDeliverable[];
 }

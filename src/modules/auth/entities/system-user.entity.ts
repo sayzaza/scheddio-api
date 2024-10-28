@@ -3,12 +3,13 @@ import {
   PrimaryColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
+  UpdateDateColumn, OneToOne,
 } from 'typeorm';
 import { UserDto } from '../dto/user.dto';
+import { User } from '../../users/entities/user.entity';
 
 @Entity({ name: 'users', schema: 'auth' })
-export class AuthUser {
+export class SystemUser {
   @PrimaryColumn({ type: 'uuid', name: 'id' })
   id: string;
 
@@ -114,6 +115,9 @@ export class AuthUser {
 
   @Column({ type: 'boolean', name: 'is_anonymous', default: false })
   isAnonymous: boolean;
+
+  // @OneToOne(() => User, user => user.systemUser)
+  // localUser: User;
 
   toDto(): UserDto {
     return {

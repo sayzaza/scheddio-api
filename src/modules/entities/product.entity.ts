@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
+import { ProductVariant } from './product-variant.entity';
 
 @Entity({ name: 'product_table', schema: 'public' })
 export class Product {
@@ -25,4 +26,7 @@ export class Product {
 
   @Column({ type: 'bigint', array: true, name: 'PRODUCT_TEAM_MEMBERS', default: () => "'{1,2,3,4}'", nullable: false })
   productTeamMembers: number[];
+
+  @OneToMany(() => ProductVariant, variant => variant.product)
+  productVariants: ProductVariant[];
 }

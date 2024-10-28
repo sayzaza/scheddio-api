@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { InquiryStatus } from './inquiry-status.entity';
 
 @Entity({ name: 'inquiries_table', schema: 'public' })
 export class Inquiry {
@@ -26,8 +27,9 @@ export class Inquiry {
   @Column({ type: 'bigint', array: true, name: 'PRODUCT_VARIANT_ID', nullable: true })
   productVariantId: number[];
 
-  @Column({ type: 'text', name: 'INQUIRY_STATUS', default: 'PENDING', nullable: true })
-  inquiryStatus: string;
+  @ManyToOne(() => InquiryStatus, status => status.inquiries)
+  @JoinColumn({ name: 'INQUIRY_STATUS', foreignKeyConstraintName: 'public_inquiries_table_INQUIRY_STATUS_ID_fkey' })
+  inquiryStatus: InquiryStatus;
 
   @Column({ type: 'text', name: 'INQUIRY_REASON', default: 'n/a', nullable: true })
   inquiryReason: string;

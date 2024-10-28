@@ -1,4 +1,6 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { TeamMember } from './team-member.entity';
+import { TimeRegionRecursion } from './time-region-recursion.entity';
 
 @Entity({ name: 'time_region_table', schema: 'public' })
 export class TimeRegion {
@@ -11,12 +13,14 @@ export class TimeRegion {
   @Column({ type: 'timestamp without time zone', name: 'TIME_REGION_END_TIME', nullable: true })
   timeRegionEndTime: Date;
 
-  @Column({ type: 'bigint', name: 'TEAM_MEMBER_ID', nullable: true })
-  teamMemberId: number;
+  @ManyToOne(() => TeamMember, teamMember => teamMember.timeRegions)
+  @JoinColumn({ name: 'TEAM_MEMBER_ID', foreignKeyConstraintName: 'time_region_table_TEAM_MEMBER_ID_fkey' })
+  teamMember: TeamMember;
 
   @Column({ type: 'text', name: 'TIME_REGION_EVENT_ID', nullable: true })
   timeRegionEventId: string;
 
-  @Column({ type: 'bigint', name: 'RECURSION_ID', default: 1, nullable: false })
-  recursionId: number;
+  @ManyToOne(() => TimeRegionRecursion, recursion => recursion.timeRegions)
+  @JoinColumn({ name: 'RECURSION_ID', foreignKeyConstraintName: 'time_region_table_RECURSION_ID_fkey' })
+  recursion: TimeRegionRecursion;
 }

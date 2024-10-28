@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
+import { Order } from './order.entity';
 
 @Entity({ name: 'status_table', schema: 'public' })
 export class Status {
@@ -7,4 +8,7 @@ export class Status {
 
   @Column({ type: 'text', name: 'STATUS', nullable: true })
   status: string;
+
+  @OneToMany(() => Order, order => order.orderStatus)
+  orders: Order[];
 }

@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { ClientAction } from '../../entities/client-action.entity';
 import { CustomProduct } from '../../entities/custom-product.entity';
+import { Action } from '../../entities/action.entity';
 
 @Entity({ name: 'EMPLOYEE_TABLE', schema: 'public' })
 export class Employee {
@@ -36,4 +37,7 @@ export class Employee {
 
   @OneToMany(() => CustomProduct, entity => entity.createdBy)
   customProducts: CustomProduct[];
+
+  @OneToMany(() => Action, action => action.performedBy)
+  actions: Action[];
 }

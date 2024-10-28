@@ -5,8 +5,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Generated,
-  OneToMany,
+  Generated, JoinColumn,
+  OneToMany, OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,6 +14,8 @@ import { CustomerUserDto } from '../dto/customer-user.dto';
 import { GroupUserMapping } from './group-user-mapping.entity';
 import { ClientAction } from '../../entities/client-action.entity';
 import { Cart } from '../../entities/cart.entity';
+import { Order } from '../../entities/order.entity';
+import { SystemUser } from '../../auth/entities/system-user.entity';
 
 @Entity({ name: 'users_table', schema: 'public' })
 export class User {
@@ -32,6 +34,9 @@ export class User {
   @Column({ name: 'USER_PHONE', type: 'text', nullable: true })
   phone: string;
 
+  // @OneToOne(() => SystemUser, user => user.localUser, { onDelete: 'CASCADE' })
+  // @JoinColumn({ name: 'SYSTEM_USER_ID', foreignKeyConstraintName: 'users_table_SYSTEM_USER_ID_fkey' })
+  // systemUser: SystemUser;
   @Column({ name: 'SYSTEM_USER_ID', type: 'uuid', nullable: true })
   @Generated('uuid')
   systemUserId: string;
@@ -101,6 +106,10 @@ export class User {
 
   @OneToMany(() => Cart, (entity) => entity.cartProductClient)
   carts: Cart[];
+
+  @OneToMany(() => Order, (entity) => entity.client)
+  orders: Order[];
+
 
   @BeforeInsert()
   async preProcess() {

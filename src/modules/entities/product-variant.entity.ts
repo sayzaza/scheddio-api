@@ -1,12 +1,14 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Product } from './product.entity';
 
 @Entity({ name: 'product_variant_table', schema: 'public' })
 export class ProductVariant {
   @PrimaryColumn({ type: 'bigint', name: 'PRODUCT_VARIANT_ID' })
   productVariantId: number;
 
-  @Column({ type: 'bigint', name: 'PRODUCT_VARIANT_CODE', nullable: true })
-  productVariantCode: number;
+  @ManyToOne(() => Product, product => product.productVariants)
+  @JoinColumn({ name: 'PRODUCT_VARIANT_CODE', foreignKeyConstraintName: 'product_variant_table_PRODUCT_VARIANT_CODE_fkey' })
+  product: Product;
 
   @Column({ type: 'text', name: 'PRODUCT_VARIANT', nullable: true })
   productVariant: string;

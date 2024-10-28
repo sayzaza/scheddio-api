@@ -1,4 +1,5 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, OneToMany } from 'typeorm';
+import { Inquiry } from './inquiry.entity';
 
 @Entity({ name: 'inquiry_status_table', schema: 'public' })
 export class InquiryStatus {
@@ -7,4 +8,7 @@ export class InquiryStatus {
 
   @Column({ type: 'text', name: 'STATUS', nullable: false })
   status: string;
+
+  @OneToMany(() => Inquiry, inquiry => inquiry.inquiryStatus)
+  inquiries: Inquiry[];
 }

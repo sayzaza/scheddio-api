@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { compare } from 'bcrypt';
 
 import { SignInSuccessDto } from './dto/sign-in-success.dto';
-import { AuthUser } from './entities/auth-user.entity';
+import { SystemUser } from './entities/system-user.entity';
 import { UsersService } from '../users/users.service';
 
 @Injectable()
@@ -13,8 +13,8 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UsersService,
-    @InjectRepository(AuthUser)
-    private usersRepository: Repository<AuthUser>,
+    @InjectRepository(SystemUser)
+    private usersRepository: Repository<SystemUser>,
     ) {}
 
   async signIn(email: string, password: string): Promise<SignInSuccessDto> {
@@ -32,11 +32,11 @@ export class AuthService {
     };
   }
 
-  findOneByEmail(email: string): Promise<AuthUser> {
+  findOneByEmail(email: string): Promise<SystemUser> {
     return this.usersRepository.findOne({ where: { email } });
   }
 
-  findOne(id: string): Promise<AuthUser> {
+  findOne(id: string): Promise<SystemUser> {
     return this.usersRepository.findOne({where: { id }});
   }
 }
