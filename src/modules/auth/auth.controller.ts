@@ -85,6 +85,7 @@ export class AuthController {
   @Get('oauth-redirect-url')
   async oAuthRedirectUrl(@Req() req: any): Promise<OAuthCallbackResponseDto> {
     const { state, realmId } = req.query;
+    console.log('state = ', state);
     if (!this.oAuthService.verifyAntiForgery(req.session, state)) {
       throw new UnauthorizedException('failed with anti-forgery verification');
     }
@@ -94,7 +95,7 @@ export class AuthController {
       req.session.realmId = realmId;
       const validated = await this.jwtService.validate(token.data.id_token);
       if (validated) {
-        const redirectUrl = `${process.env.FRONTEND_OAUTH_REDIRECT_URI}?accessToken=${token.accessToken}`;
+        const redirectUrl = `${process.env.FRONTEND_OAUTH_REDIRECT_URI}?accessToken=${token.data.id_token}`;
         return { redirectUrl };
       }
     } catch (e) {

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
@@ -9,6 +9,7 @@ import { SystemUser } from './entities/system-user.entity';
 import { UsersModule } from '../users/users.module';
 import { ServicesModule } from '../../services/services.module';
 import { LocalJwtService } from './local-jwt.service';
+import { AuthGuard } from './auth.guard';
 
 @Module({
   imports: [
@@ -20,11 +21,11 @@ import { LocalJwtService } from './local-jwt.service';
         expiresIn: '1d', // TODO: should be reconsidered later on
       }
     }),
-    UsersModule,
+    forwardRef(() => UsersModule),
     ServicesModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalJwtService],
-  exports: [AuthService, LocalJwtService],
+  providers: [AuthService, LocalJwtService, AuthGuard],
+  exports: [AuthService, LocalJwtService, AuthGuard],
 })
 export class AuthModule {}
