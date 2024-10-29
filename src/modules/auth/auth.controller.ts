@@ -7,6 +7,7 @@ import {
   Post,
   Request,
   UseGuards,
+  Req, UnauthorizedException,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -23,6 +24,9 @@ import { SignInSuccessDto } from './dto/sign-in-success.dto';
 import { AuthGuard } from './auth.guard';
 import { UsersService } from '../users/users.service';
 import { CustomerUserDto } from '../users/dto/customer-user.dto';
+import { OauthUriDto } from './dto/oauth-uri.dto';
+import { OAuthService } from '../../services/quickbooks/oauth.service';
+import { LocalJwtService } from './local-jwt.service';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -30,6 +34,8 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly userService: UsersService,
+    private readonly oAuthService: OAuthService,
+    private readonly jwtService: LocalJwtService,
   ) {}
 
   @ApiOperation({ summary: 'Login with email and password', description: '' })
@@ -58,5 +64,42 @@ export class AuthController {
     const { id } = req.user;
     const user = await this.userService.findOne(id);
     return user.toDto();
+  }
+
+  @ApiOperation({ summary: 'Generate Intuit signin redirect URI' })
+  @ApiOkResponse({ type: () => OauthUriDto })
+  @Get('oauth-intuit-popup-uri')
+  async getOauthIntuitPopupUri(@Req() req: any): Promise<OauthUriDto> {
+    await this.oAuthService.setScopes('sign_in_with_intuit');
+    const uri = this.oAuthService.intuitAuth.code.getUri({
+      state: this.oAuthService.generateAntiForgery(req.session),
+    });
+    console.log('Redirecting to authorization uri:', uri);
+    return {
+      uri
+    };
+  }
+
+  @ApiOperation({ summary: 'Callback url for intuit oAuth' })
+  @Get('oauth-redirect-url')
+  async oAuthRedirectUrl(@Req() req: any): Promise<any> {
+    const { state, realmId } = req.query;
+    if (!this.oAuthService.verifyAntiForgery(req.session, state)) {
+      throw new UnauthorizedException('failed with anti-forgery verification');
+    }
+    try {
+      const token = await this.oAuthService.getExchangeAccessToken(req.originalUrl);
+      this.oAuthService.saveToken(req.session, token);
+      req.session.realmId = realmId;
+      const validated = await this.jwtService.validate(token.data.id_token);
+      if (validated) {
+        const callbackUrl = `${process.env.FRONTEND_OAUTH_REDIRECT_URI}?accessToken=${token.accessToken}`;
+        return { callbackUrl };
+      }
+      return new UnauthorizedException('Failed with jwt validation');
+    } catch (e) {
+      console.log('e ', e.message);
+      throw new UnauthorizedException(e.message);
+    }
   }
 }

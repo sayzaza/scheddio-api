@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import * as expressBasicAuth from 'express-basic-auth';
+import * as session from 'express-session';
 import { config as dotenvConfig } from 'dotenv';
 
 import { AppModule } from './app.module';
@@ -24,11 +25,19 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
 
+  app.setGlobalPrefix('api');
+
   app.use('/docs', expressBasicAuth({
     challenge: true,
     users: {
       [authConfig.user]: authConfig.password,
     }
+  }));
+
+  app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
   }));
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);

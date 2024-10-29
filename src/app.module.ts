@@ -9,6 +9,7 @@ import { AuthService } from './modules/auth/auth.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ServicesModule } from './services/services.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AppService } from './app.service';
       useFactory: async (configService: ConfigService) => configService.get('typeorm') }),
     UsersModule,
     AuthModule,
+    ServicesModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService],

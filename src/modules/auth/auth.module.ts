@@ -7,6 +7,8 @@ import { AuthService } from './auth.service';
 import { JWT_SECRET } from '../../shared/constants';
 import { SystemUser } from './entities/system-user.entity';
 import { UsersModule } from '../users/users.module';
+import { ServicesModule } from '../../services/services.module';
+import { LocalJwtService } from './local-jwt.service';
 
 @Module({
   imports: [
@@ -19,9 +21,10 @@ import { UsersModule } from '../users/users.module';
       }
     }),
     UsersModule,
+    ServicesModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService],
-  exports: [AuthService],
+  providers: [AuthService, LocalJwtService],
+  exports: [AuthService, LocalJwtService],
 })
 export class AuthModule {}
