@@ -27,6 +27,7 @@ import { CustomerUserDto } from '../users/dto/customer-user.dto';
 import { OauthUriDto } from './dto/oauth-uri.dto';
 import { OAuthService } from '../../services/quickbooks/oauth.service';
 import { LocalJwtService } from './local-jwt.service';
+import { OAuthCallbackResponseDto } from './dto/oauth-callback-response.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -82,7 +83,7 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Callback url for intuit oAuth' })
   @Get('oauth-redirect-url')
-  async oAuthRedirectUrl(@Req() req: any): Promise<any> {
+  async oAuthRedirectUrl(@Req() req: any): Promise<OAuthCallbackResponseDto> {
     const { state, realmId } = req.query;
     if (!this.oAuthService.verifyAntiForgery(req.session, state)) {
       throw new UnauthorizedException('failed with anti-forgery verification');
@@ -93,12 +94,10 @@ export class AuthController {
       req.session.realmId = realmId;
       const validated = await this.jwtService.validate(token.data.id_token);
       if (validated) {
-        const callbackUrl = `${process.env.FRONTEND_OAUTH_REDIRECT_URI}?accessToken=${token.accessToken}`;
-        return { callbackUrl };
+        const redirectUrl = `${process.env.FRONTEND_OAUTH_REDIRECT_URI}?accessToken=${token.accessToken}`;
+        return { redirectUrl };
       }
-      return new UnauthorizedException('Failed with jwt validation');
     } catch (e) {
-      console.log('e ', e.message);
       throw new UnauthorizedException(e.message);
     }
   }
