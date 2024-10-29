@@ -85,7 +85,6 @@ export class AuthController {
   @Get('oauth-redirect-url')
   async oAuthRedirectUrl(@Req() req: any): Promise<OAuthCallbackResponseDto> {
     const { state, realmId } = req.query;
-    console.log('state = ', state);
     if (!this.oAuthService.verifyAntiForgery(req.session, state)) {
       throw new UnauthorizedException('failed with anti-forgery verification');
     }

@@ -27,8 +27,6 @@ export class LocalJwtService {
     }
     const key = await this.getKeyFromJWKsURI(idTokenHeader.kid);
     const publicKey = getPem(key.n, key.e);
-    console.log(idTokenHeader);
-    console.log(idTokenPayload);
     return this.jwtService.verifyAsync(idToken, { secret: publicKey });
   }
 
