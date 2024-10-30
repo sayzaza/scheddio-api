@@ -1,10 +1,12 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as Tokens from 'csrf';
 import * as ClientOAuth2 from 'client-oauth2';
+import { Request } from 'express';
 
 import oAuthConfig from '../../config/quickbooks-oauth.config';
 import openIdConfig from '../../config/openid.config';
 import { Token } from 'client-oauth2';
+import { makeAuthorizationHeader } from '../../shared/utils';
 
 @Injectable()
 export class OAuthService {
@@ -49,7 +51,7 @@ export class OAuthService {
     try {
       const token = this.getToken(session);
       const newToken = await token.refresh();
-      this.saveToken(session, newToken);
+      this.saveTokenToSession(session, newToken);
       return newToken;
     } catch (e) {
       console.log(e);
@@ -83,7 +85,7 @@ export class OAuthService {
     )
   }
 
-  saveToken(session: any, token: any) {
+  saveTokenToSession(session: any, token: any) {
     session.accessToken = token.accessToken;
     session.refreshToken = token.refreshToken;
     session.tokenType = token.tokenType;
@@ -92,5 +94,16 @@ export class OAuthService {
 
   verifyAntiForgery(session: any, token: string): boolean {
     return this.csrf.verify(session.secret, token);
+  }
+
+  async getUserInfo(req: Request): Promise<any> {
+    const headers = makeAuthorizationHeader(req);
+    const url = `${process.env.QUICKBOOKS_ACCOUNTS_API_URI}/v1/openid_connect/userinfo`;
+    try {
+      const res = await fetch(url, { headers });
+      return res.json();
+    } catch (e) {
+      throw e;
+    }
   }
 }

@@ -7,7 +7,7 @@ import {
   Post,
   Request,
   UseGuards,
-  Req, UnauthorizedException,
+  Req, UnauthorizedException, Redirect,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -27,7 +27,7 @@ import { CustomerUserDto } from '../users/dto/customer-user.dto';
 import { OauthUriDto } from './dto/oauth-uri.dto';
 import { OAuthService } from '../../services/quickbooks/oauth.service';
 import { LocalJwtService } from './local-jwt.service';
-import { OAuthCallbackResponseDto } from './dto/oauth-callback-response.dto';
+import { OAuthCallbackRedirectDto } from './dto/o-auth-callback-redirect.dto';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -62,9 +62,8 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('profile')
   async getProfile(@Request() req: any): Promise<CustomerUserDto> {
-    const { id } = req.user;
-    const user = await this.userService.findOne(id);
-    return user.toDto();
+    const profile = await this.oAuthService.getUserInfo(req);
+    return profile as any;
   }
 
   @ApiOperation({ summary: 'Generate Intuit signin redirect URI' })
@@ -83,19 +82,21 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Callback url for intuit oAuth' })
   @Get('oauth-redirect-url')
-  async oAuthRedirectUrl(@Req() req: any): Promise<OAuthCallbackResponseDto> {
+  @Redirect(process.env.FRONTEND_OAUTH_REDIRECT_URI, 301)
+  async oAuthRedirectUrl(@Req() req: any): Promise<OAuthCallbackRedirectDto> {
     const { state, realmId } = req.query;
     if (!this.oAuthService.verifyAntiForgery(req.session, state)) {
       throw new UnauthorizedException('failed with anti-forgery verification');
     }
     try {
       const token = await this.oAuthService.getExchangeAccessToken(req.originalUrl);
-      this.oAuthService.saveToken(req.session, token);
+      this.oAuthService.saveTokenToSession(req.session, token);
+      await this.authService.saveToken(+realmId, token);
       req.session.realmId = realmId;
       const validated = await this.jwtService.validate(token.data.id_token);
       if (validated) {
-        const redirectUrl = `${process.env.FRONTEND_OAUTH_REDIRECT_URI}?accessToken=${token.data.id_token}`;
-        return { redirectUrl };
+        const url = `${process.env.FRONTEND_OAUTH_REDIRECT_URI}?accessToken=${token.accessToken}&refreshToken=${token.refreshToken}`;
+        return { url };
       }
     } catch (e) {
       throw new UnauthorizedException(e.message);

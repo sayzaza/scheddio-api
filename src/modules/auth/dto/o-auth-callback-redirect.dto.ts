@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class OAuthCallbackResponseDto {
+export class OAuthCallbackRedirectDto {
   @ApiProperty({ description: 'The frontend route for user authentication.' })
-  redirectUrl: string;
+  url: string;
 }

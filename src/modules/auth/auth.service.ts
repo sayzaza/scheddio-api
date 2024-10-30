@@ -7,6 +7,8 @@ import { compare } from 'bcrypt';
 import { SignInSuccessDto } from './dto/sign-in-success.dto';
 import { SystemUser } from './entities/system-user.entity';
 import { UsersService } from '../users/users.service';
+import { QuickBooksToken } from './entities/quickbooks-token.entity';
+import { Token } from 'client-oauth2';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +17,8 @@ export class AuthService {
     private userService: UsersService,
     @InjectRepository(SystemUser)
     private usersRepository: Repository<SystemUser>,
+    @InjectRepository(QuickBooksToken)
+    private quickBooksTokenRepository: Repository<QuickBooksToken>,
     ) {}
 
   async signIn(email: string, password: string): Promise<SignInSuccessDto> {
@@ -38,5 +42,17 @@ export class AuthService {
 
   findOne(id: string): Promise<SystemUser> {
     return this.usersRepository.findOne({where: { id }});
+  }
+
+  async saveToken(companyId: number, token: Token): Promise<QuickBooksToken> {
+    let entity = await this.quickBooksTokenRepository.findOne({ where: { companyId } });
+    if (!entity) {
+      entity = new QuickBooksToken();
+      entity.companyId = companyId;
+      entity.accessToken = token.accessToken;
+      entity.refreshToken = token.refreshToken;
+      entity.expiryTime = (token as any).expires;
+    }
+    return this.quickBooksTokenRepository.save(entity);
   }
 }

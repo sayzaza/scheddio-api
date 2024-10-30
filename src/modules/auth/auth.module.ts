@@ -10,10 +10,11 @@ import { UsersModule } from '../users/users.module';
 import { ServicesModule } from '../../services/services.module';
 import { LocalJwtService } from './local-jwt.service';
 import { AuthGuard } from './auth.guard';
+import { QuickBooksToken } from './entities/quickbooks-token.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([SystemUser]),
+    TypeOrmModule.forFeature([SystemUser, QuickBooksToken]),
     JwtModule.register({
       global: true,
       secret: JWT_SECRET,
