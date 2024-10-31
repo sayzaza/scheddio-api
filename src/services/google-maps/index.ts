@@ -16,4 +16,13 @@ export class GoogleMapsService {
       throw error;
     }
   }
+
+  async createEvent(payload: any) {
+    // TODO: add google maps integration code
+    return {} as any;
+  }
+
+  async removeEvent(id: string) {
+    // TODO: add google maps integration code
+  }
 }

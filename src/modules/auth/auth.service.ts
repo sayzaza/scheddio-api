@@ -55,4 +55,9 @@ export class AuthService {
     }
     return this.quickBooksTokenRepository.save(entity);
   }
+
+  async getQuickbooksAccessToken(companyId: number): Promise<string> {
+    const token = await this.quickBooksTokenRepository.findOne({ where: { companyId } });
+    return token.accessToken;
+  }
 }
