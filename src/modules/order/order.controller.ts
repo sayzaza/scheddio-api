@@ -26,6 +26,7 @@ export class OrderController {
       event = await this.googleMapsService.createEvent(payload);
       order = await this.ordersService.createOrder(payload);
     } catch (e) {
+      console.log('error = ', e);
       await this.quickBooksService.cancelInvoice(invoice.id);
       await this.googleMapsService.removeEvent(event.id);
       await this.ordersService.removeOrder(order.id);
