@@ -1,7 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+  OneToOne, JoinColumn,
+} from 'typeorm';
 import { ClientAction } from '../../entities/client-action.entity';
 import { CustomProduct } from '../../entities/custom-product.entity';
 import { Action } from '../../entities/action.entity';
+import { SystemUser } from '../../auth/entities/system-user.entity';
 
 @Entity({ name: 'EMPLOYEE_TABLE', schema: 'public' })
 export class Employee {

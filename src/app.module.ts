@@ -10,6 +10,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ServicesModule } from './services/services.module';
+import { OrderModule } from './modules/order/order.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ServicesModule } from './services/services.module';
     UsersModule,
     AuthModule,
     ServicesModule,
+    OrderModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService],
